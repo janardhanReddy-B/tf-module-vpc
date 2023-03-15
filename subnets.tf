@@ -1,0 +1,19 @@
+resource "aws_subnet" "public" {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = var.PUBLIC_SUBNETS_CIDR[count.index]
+  availability_zone = var.AZ[count.index]
+
+  tags = {
+    Name = "${var.PROJECT}-${var.ENV}-public-subnet"
+  }
+}
+
+resource "aws_subnet" "private" {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = var.PRIVATE_SUBNETS_CIDR[count.index]
+  availability_zone = var.AZ[count.index]
+
+  tags = {
+    Name = "${var.PROJECT}-${var.ENV}-private-subnet"
+  }
+}
