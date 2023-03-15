@@ -5,7 +5,11 @@ resource "aws_internet_gateway" "IG" {
     Name = "${var.PROJECT}-${var.ENV}-IG"
   }
 }
-resource "aws_eip" "NAT" {}
+resource "aws_eip" "NAT" {
+  tags = {
+    Name = "${var.PROJECT}-${var.ENV}-for nat"
+  }
+}
 
 resource "aws_nat_gateway" "NAT" {
   allocation_id = aws_eip.NAT.id
