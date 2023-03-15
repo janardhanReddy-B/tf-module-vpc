@@ -9,7 +9,7 @@ resource "aws_eip" "NAT" {}
 
 resource "aws_nat_gateway" "NAT" {
   allocation_id = aws_eip.NAT.id
-  subnet_id     = aws_subnet.private.id
+  subnet_id     = aws_subnet.public.*.id[0]
 
   tags = {
     Name = "${var.PROJECT}-${var.ENV}-NAT"
