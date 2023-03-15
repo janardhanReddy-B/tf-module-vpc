@@ -25,3 +25,34 @@ resource "aws_route_table_association" "private" {
   subnet_id      = aws_subnet.private.*.id[count.index]
   route_table_id = aws_route_table.private.id
 }
+
+resource "aws_route" "ig-route-public-subnet" {
+  route_table_id            = aws_route_table.public.id
+  destination_cidr_block    = "0.0.0.0/0"
+  gateway_id = aws_internet_gateway.IG.id
+}
+
+resource "aws_route" "nat-route-private-subnet" {
+  route_table_id            = aws_route_table.private.id
+  destination_cidr_block    = "0.0.0.0/0"
+  nat_gateway_id = aws_nat_gateway.NAT.id
+}
+
+resource "aws_route" "peer-route-to-private-subnets" {
+  route_table_id            = aws_route_table.private.id
+  destination_cidr_block    = var.DEFAULT_VPC_CIDR
+  vpc_peering_connection_id = aws_vpc_peering_connection.peer.id
+}
+
+resource "aws_route" "peer-route-to-public-subnets" {
+  route_table_id            = aws_route_table.public.id
+  destination_cidr_block    = var.DEFAULT_VPC_CIDR
+  vpc_peering_connection_id = aws_vpc_peering_connection.peer.id
+}
+
+resource "aws_route" "peer-route-to-default-vpc-subnets" {
+  route_table_id            = var.DEFAULT_VPC_RT
+  destination_cidr_block    = var.VPC_CIDR
+  vpc_peering_connection_id = aws_vpc_peering_connection.peer.id
+
+}
